@@ -1,69 +1,79 @@
 ﻿namespace FightingArena.Tests
 {
     using NUnit.Framework;
+    using System;
+    using System.Linq;
 
     [TestFixture]
     public class ArenaTests
     {
         [Test]
-        public void Constructor_Should_Create_DataProperly()
+        public void Constructor_Should_Create_Data()
         {
+        Arena arena = new Arena();
+
+            Assert.IsNotNull(arena.Warriors);
+            Assert.AreEqual(arena.Count, arena.Warriors.Count);
+            Assert.AreEqual(0, arena.Count);
+
+        }
+
+        [Test]
+        public void Enroll_ShouldAddWarriors_ValidData()
+        {
+            var arena = new Arena();
             Warrior warrior = new Warrior("Tosho", 100, 100);
 
-            Assert.AreEqual(warrior.Name, "tosho");
-            Assert.AreEqual(warrior.HP, 100);
-            Assert.AreEqual(warrior.Damage, 100);
+            arena.Enroll(warrior);
 
-            Warrior warrior = new Warrior("Tosho", 1, 0);
+            Assert.AreEqual(1, arena.Count);
+            Assert.True(arena.Warriors.Any(x => x.Name == "Tosho"));
+        }
 
-            Assert.AreEqual(warrior.Name, "tosho");
-            Assert.AreEqual(warrior.HP, 0);
-            Assert.AreEqual(warrior.Damage, 1);
+        [Test]
+        public void Enroll_ShouldThrowException_InvalidData()
+        {
+            var arena = new Arena();
+            Warrior warrior = new Warrior("Tosho", 100, 100);
+
+            arena.Enroll(warrior);
+          
+
+            Assert.Throws<InvalidOperationException>(
+                () => arena.Enroll(warrior));
+            
+        }
+
+        [Test]
+        public void Fight_Should_DecreseHP_WithValidData()
+        {
+            var arena = new Arena();
+
+            Warrior attacker = new Warrior("Tosho", 101, 100);
+            Warrior defender = new Warrior("Gosho", 60, 100);
+
+            arena.Enroll(attacker);
+            arena.Enroll(defender);
+
+            arena.Fight("Tosho", "Gosho");
+
+            Assert.AreEqual(40, attacker.HP);
+            Assert.AreEqual(0, defender.HP);
 
         }
 
-        public void Constructor_Should_ThrowExcepion_On_InvalidData()
+        [Test]
+        public void Fight_ShouldThrowException_WhenWArrionDoesntExist_InvalidData()
         {
-
-                Assert.Throws<ArgumentException>(
-                () => new Warrior(null, 100, 100));
-
-                 Assert.Throws<ArgumentException>(
-                () => new Warrior("", 100, 100));
-
-                Assert.Throws<ArgumentException>(
-                () => new Warrior(" ", 100, 100));
-
-                Assert.Throws<ArgumentException>(
-                () => new Warrior("Tosho", 0, 100));
-
-                Assert.Throws<ArgumentException>(
-                () => new Warrior("Tosho", -1, 100));
-
-                Assert.Throws<ArgumentException>(
-                () => new Warrior("Tosho", 50, -1));
-
-        }
-
-        public void Fight_ShouldThrowExcepion_InvalidData()
-        {
-            Warrior attacker = new Warrior("Tosho", 50, 5);
-            Warrior defender = new Warrior("Tosho", 50, 50);
+            var arena = new Arena();
 
             Assert.Throws<InvalidOperationException>(
-                () => attacker.Attack(defender));
+                () => arena.Fight("Tosho", "Gosho"));
 
-            Warrior attacker = new Warrior("Tosho", 50, 50);
-            Warrior defender = new Warrior("Tosho", 50, 5);
-
-            Assert.Throws<InvalidOperationException>(
-                () => attacker.Attack(defender));
-
-            Warrior attacker = new Warrior("Tosho", 50, 50);
-            Warrior defender = new Warrior("Tosho", 100, 100);
+            arena.Enroll(new Warrior("Tosho", 100, 100));
 
             Assert.Throws<InvalidOperationException>(
-                () => attacker.Attack(defender));
+                () => arena.Fight("Tosho", "Gosho"));
         }
     }
 }
