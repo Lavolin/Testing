@@ -2,16 +2,17 @@ namespace Database.Tests
 {
     using NUnit.Framework;
     using System;
+    using System.Linq;
 
     [TestFixture]
     public class DatabaseTests
     {
 
-        [TestCase(new int[] {1})]
-        [TestCase(new int[] {5, 16, 20 ,234})]
-        [TestCase(new int[] {int.MinValue, int.MaxValue, 4456})]
+        [TestCase(new int[] { 1 })]
+        [TestCase(new int[] { 5, 16, 20, 234 })]
+        [TestCase(new int[] { int.MinValue, int.MaxValue, 4456 })]
         [TestCase(new int[0])]
-        [TestCase(new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16})]
+        [TestCase(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 })]
         public void Contructor_With_Valid_Data_Should_Pass(int[] parameters)
         {
             //Arrange and Act
@@ -31,7 +32,7 @@ namespace Database.Tests
             new int[] { int.MinValue, int.MaxValue, 4456 },
             new int[0],
             3)]
-        
+
         [TestCase(
             new int[0],
             new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 },
@@ -53,7 +54,7 @@ namespace Database.Tests
         }
 
         [TestCase(
-            new int[] {18, 3},
+            new int[] { 18, 3 },
             new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 },
             1)]
         public void Add_With_Invalid_Data(
@@ -107,12 +108,12 @@ namespace Database.Tests
         }
 
         [TestCase(
-            new int[] {2},
+            new int[] { 2 },
             1)]
         [TestCase(
             new int[0],
             0)]
-        public void Remove_InvalidData_Negative_Test(int[] ctorParams,int removeNum)
+        public void Remove_InvalidData_Negative_Test(int[] ctorParams, int removeNum)
         {
             //Arrange
             Database database = new Database(ctorParams);
@@ -134,7 +135,7 @@ namespace Database.Tests
             new int[] { 18, 3 },
             new int[] { 10, 20, 14, 15 },
             2,
-            new int[] { 18, 3,10, 20 })]
+            new int[] { 18, 3, 10, 20 })]
         public void Fetch_WithValid_Data_Positive_Test(
             int[] ctorParameters,
             int[] paramsToAdd,
@@ -159,6 +160,20 @@ namespace Database.Tests
             int[] finalResult = database.Fetch();
 
             CollectionAssert.AreEqual(finalResult, expectedArray);
+        }
+
+        [Test]
+        public void Test()
+        {
+            Database[] database1 = { new Database(12) };
+            Database[] database2 = { new Database(12) };
+
+            bool AreEqual = database1
+                    .All(x => database2
+                    .Any(y => y.Count == x.Count));
+
+            Assert.True(AreEqual);
+
         }
     }
 }

@@ -65,6 +65,157 @@ namespace DatabaseExtended.Tests
 
         }
 
+        [Test]
+        public void AddRange_Should_Return_Correct_Data()
+        {
+            Person[] people = new Person[]
+            {
+                new Person(1, "Todor1"),
+                new Person(2, "Todor2"),
+                new Person(3, "Todor3"),
+                new Person(4, "Todor4"),
+                new Person(5, "Todor5"),
+                new Person(6, "Todor6"),
+                new Person(7, "Todor7"),
+                new Person(8, "Todor8"),
+                new Person(9, "Todor9"),
+                new Person(10, "Todor10"),
+                new Person(11, "Todor11"),
+                new Person(12, "Todor12"),
+                new Person(13, "Todor13"),
+                new Person(14, "Todor14"),
+                new Person(15, "Todor15"),
+                new Person(16, "Todor16"),
+                new Person(17, "Todor17"),
+            };
+
+            Assert.That(() => new Database(people), Throws.ArgumentException);
+        }
+
+       
+        [Test]
+        public void ConstructorShoudInitializeCollection()
+        {
+            var expected = new Person[] { new Person(1, "gosho") };
+
+            var db = new Database(expected);
+
+            var actual = expected;
+
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void FindUsername_Should_Return_Correct_Person()
+        {
+            Person[] people = new Person[]
+            {
+                new Person(1, "Todor1"),
+                new Person(2, "Todor2"),
+                new Person(3, "Todor3"),
+                new Person(4, "Todor4"),
+                new Person(5, "Todor5"),
+                new Person(6, "Todor6"),
+                new Person(7, "Todor7"),
+                new Person(8, "Todor8"),
+                new Person(9, "Todor9"),
+                new Person(10, "Todor10")
+            };
+
+            Database database = new Database(people);
+
+            Assert.That(people[8], Is.EqualTo(database.FindByUsername("Todor9")));
+        }
+
+        [Test]
+        public void Find_UsernameWithEmptyString_Should_Throw_Argument_Null_Exception()
+        {
+            Database database = new Database();
+
+            Assert.That(() => database.FindByUsername(string.Empty), Throws.ArgumentNullException, "Find by username should throw when given an empty string as an argument.");
+        }
+
+        [Test]
+        public void Find_UsernameWithNullString_Should_Throw_Argument_Null_Exception()
+        {
+            Database database = new Database();
+
+            Assert.That(() => database.FindByUsername(null), Throws.ArgumentNullException, "Find by username should throw when given null as an argument.");
+        }
+
+        [Test]
+        public void Find_UsernameWithNotExistantName_Should_Throw_Invalid_Operation_Exception()
+        {
+            Person[] people = new Person[]
+            {
+                new Person(1, "Todor1"),
+                new Person(2, "Todor2"),
+                new Person(3, "Todor3"),
+                new Person(4, "Todor4"),
+                new Person(5, "Todor5"),
+                new Person(6, "Todor6"),
+                new Person(7, "Todor7"),
+                new Person(8, "Todor8"),
+                new Person(9, "Todor9"),
+                new Person(10, "Todor10")
+            };
+
+            Database database = new Database();
+
+            Assert.That(() => database.FindByUsername("Michael"), Throws.InvalidOperationException, "Find by username should throw when given a name which does not exist in the database as an argument.");
+        }
+
+        [Test]
+        public void Find_Id_Should_Return_Correct_Person()
+        {
+            Person[] people = new Person[]
+            {
+                new Person(1, "Todor1"),
+                new Person(2, "Todor2"),
+                new Person(3, "Todor3"),
+                new Person(4, "Todor4"),
+                new Person(5, "Todor5"),
+                new Person(6, "Todor6"),
+                new Person(7, "Todor7"),
+                new Person(899, "Todor8"),
+                new Person(9, "Todor9"),
+                new Person(10, "Todor10")
+            };
+
+            Database database = new Database(people);
+
+            Assert.That(people[7], Is.EqualTo(database.FindById(899)));
+        }
+
+        [Test]
+        public void Find_Id_WithNegativeNumber_Should_Throw_Argument_OutOfRangeException()
+        {
+            Database database = new Database();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => database.FindById(-50), "Find by id should throw when given a negative number as an argument.");
+        }
+
+        [Test]
+        public void Find_Id_WithNotExistant_Id_Should_ThrowInvalidOperationException()
+        {
+            Person[] people = new Person[]
+            {
+                new Person(1, "Todor1"),
+                new Person(2, "Todor2"),
+                new Person(3, "Todor3"),
+                new Person(4, "Todor4"),
+                new Person(5, "Todor5"),
+                new Person(6, "Todor6"),
+                new Person(7, "Todor7"),
+                new Person(8, "Todor8"),
+                new Person(9, "Todor9"),
+                new Person(10, "Todor10")
+            };
+
+            Database database = new Database();
+
+            Assert.Throws<InvalidOperationException>(() => database.FindById(11), "Find by id should throw when given an id which does not exist in the database as an argument.");
+        }
         public static IEnumerable<TestCaseData> TestCaseRemoveData()
         {
             TestCaseData[] testCases = new TestCaseData[]
